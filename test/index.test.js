@@ -3,7 +3,6 @@
 let server = require('../index');
 const connDb = require("../config/db.js")
 const uri = 'mongodb+srv://vishnupriyat20:vish@cluster0.vy04mxk.mongodb.net/';
-const chaitHttp = require("chai-http")
 
 //Require the dev-dependencies
 
@@ -24,11 +23,11 @@ const chaitHttp = require("chai-http")
         })
        
         it('it should register a new user', (done) => {
-          import("chai").then(chai => {
-
-            let should = chai.should();
-            chai.use(chaiHttp);
-            chai.request(server)
+          let chai = await import("chai")
+          let chaiHttp = await import("chai-http")
+          let should = chai.should();
+          await chai.use(chaiHttp);
+          chai.request(server)
             .post('/users/register')
             .send({
               username: 'testuser',
@@ -42,7 +41,6 @@ const chaitHttp = require("chai-http")
               res.body.message.should.eql('User registration sparkled!');
             });
             done();
-          })
         }).timeout(10000)
       });
     
