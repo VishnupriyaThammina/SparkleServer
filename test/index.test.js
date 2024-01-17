@@ -16,13 +16,9 @@ const uri = 'mongodb+srv://vishnupriyat20:vish@cluster0.vy04mxk.mongodb.net/';
       */
     
      describe('/POST register', () => {
-        before(done => {
-          connDb(uri, () => {
-            done()
-          })
-        })
+        before(connDb)
        
-        it('it should register a new user', (done) => {
+        it('it should register a new user', async(done) => {
           let chai = await import("chai")
           let chaiHttp = await import("chai-http")
           let should = chai.should();
