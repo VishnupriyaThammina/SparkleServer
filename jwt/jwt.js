@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken")
 const secretKey = process.env.secretKey
+
 const tokenGeneration = (data)=>{
 
     const token = jwt.sign(data,secretKey,{expiresIn:'1h'});
