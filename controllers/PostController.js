@@ -4,33 +4,50 @@ const Post = require('../models/postSchema')
 const jwt = require('../jwt/jwt');
 const User = require('../models/userSchema')
 
-// create
+const path = require('path');
+const multer = require('multer');
+
+const storage = multer.memoryStorage(); // or any other storage engine you are using
+const upload = multer({ storage: storage }).single('imgUp'); // 'imgUp' should match the field name
+
+
 const createPost = async (req, res) => {
-  try {
-    const { token } = req.headers;
-    console.log(req.headers)
-        if (!token) {
-            return res.status(401).json({ error: "Unauthorized" });
+    try {
+      const { token } = req.headers;
+      if (!token) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+  
+      const decodedToken = jwt.verifyToken(token);
+  console.log(req.body)
+      // Handle file upload first
+      upload.single('imUp')(req, res, async (err) => {
+        if (err) {
+          console.error('Multer Error', err);
+          return res.status(400).json({ error: "Error in upload" });
         }
-
-    const decodedToken = jwt.verifyToken(token);
-const user = await User.findOne({username:decodedToken.username})
-    const post = new Post({
-      title: req.body.title,
-      subtitle: req.body.subtitle,
-      content: req.body.content,
-      banner: req.body.banner,
-      thumbnail:req.body.thumbnail,
-      userid: user._id, // Assuming _id is the ObjectId of the user
-    });
-
-    await post.save();
-    res.status(201).json(post);
-  } catch (error) {
-    console.log("Error creating post:", error);
-    res.status(400).json({ error: "Internal server error" });
-  }
-};
+  
+        const user = await User.findOne({ username: decodedToken.username });
+  
+        const post = new Post({
+          title: req.body.title,
+          subtitle: req.body.subtitle,
+          content: req.body.content,
+          banner: req.body.banner,
+          thumbnail: req.body.thumbnail,
+          imgUp: req.file ? req.file.path : null, // Check if file is uploaded
+          userid: user._id,
+        });
+  
+        await post.save();
+        res.status(201).json(post);
+      });
+    } catch (error) {
+      console.log("Error creating post:", error);
+      res.status(400).json({ error: "Internal server error" });
+    }
+  };
+  
 
 const recentPosts = async (req,res)=>{
     try{

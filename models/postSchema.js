@@ -17,11 +17,15 @@ const PostSchema = new Schema({
     },
     banner :{
         type: String,
-        required:true,
+        required:false,
     },
     thumbnail :{
         type: String,
-        required:true,
+        required:false,
+    },
+    imgUp :{
+        type: String,
+        required:false,
     },
     createTime:{
         type: Date,
