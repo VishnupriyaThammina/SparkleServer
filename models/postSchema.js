@@ -19,10 +19,6 @@ const PostSchema = new Schema({
         type: String,
         required:false,
     },
-    thumbnail :{
-        type: String,
-        required:false,
-    },
     imgUp :{
         type: String,
         required:false,

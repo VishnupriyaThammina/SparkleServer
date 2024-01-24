@@ -10,6 +10,7 @@ const postRoutes = require('./routes/postRoutes');
 const connDb = require('./config/db')
 const cookieParser = require('cookie-parser')
 app.use(cookieParser())
+app.use('/uploads', express.static(__dirname + '/uploads'));
 
 app.use(bodyParser.json())
 app.use(cors())
