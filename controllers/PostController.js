@@ -4,8 +4,6 @@ const jwt = require("../jwt/jwt");
 const User = require("../models/userSchema");
 
 const createPost = async (req, res) => {
-    console.log(req.body);
-
   try {
     const { token } = req.headers;
     if (!token) {
@@ -13,16 +11,18 @@ const createPost = async (req, res) => {
     }
 
     const decodedToken = jwt.verifyToken(token);
+    console.log(req.body);
     // Handle file upload first
 
     const user = await User.findOne({ username: decodedToken.username });
-console.log(req.files)
+
     const post = await Post.create({
       title: req.body.title,
       subtitle: req.body.subtitle,
       content: req.body.content,
-    //   banner: req.files['file1'][0].path,
-      imgUp: req.file.path, // trimmed file path
+      banner: req.body.banner,
+      thumbnail: req.body.thumbnail,
+      imgUp: req.file.path, // trimmed file
       userid: user._id,
     });
 
