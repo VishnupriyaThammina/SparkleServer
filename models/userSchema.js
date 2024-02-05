@@ -17,9 +17,7 @@ const UserSchema = new Schema({
         type:String,
        default:"Busy Sparkling! ttyl"
     },
-    pfp :{
-        type:String,
-    },
+  
     password:String ,
 });
 

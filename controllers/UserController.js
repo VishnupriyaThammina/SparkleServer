@@ -104,7 +104,6 @@ const updateUserByUsername = async (req, res) => {
         }
 
         const decodedToken = jwt.verifyToken(token);
-
         const username = decodedToken.username;
         const user = await User.findOne({ username });
 

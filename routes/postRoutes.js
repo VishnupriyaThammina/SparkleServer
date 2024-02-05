@@ -11,7 +11,7 @@ router.get('/',getAllPosts); // to get all posts
 router.get('/userposts',getPostbyID); // get post by id from token
 router.get('/:id',viewPostThruId);
 // using post id view post
-router.put('/:id',updatePostById);
+router.put('/:id',uploadMiddleware.array("postImages"),updatePostById);
 // updating post id coming form frontend
 // router.delete('/:id',deletePostById);
 // to delete a post

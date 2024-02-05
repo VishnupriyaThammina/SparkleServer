@@ -95,6 +95,12 @@ const updatePostById = async (req, res) => {
     }
 
     const decodedToken = jwt.verifyToken(token);
+    const imageUrls = await Promise.all(
+      req.files.map(async (file) => {
+        return await uploadToCloudinary(file.path, "user-images");
+      })
+    );
+    console.log(imageUrls)
 
     const post = await Post.findById(req.params.id);
 
@@ -102,9 +108,19 @@ const updatePostById = async (req, res) => {
       return res.status(404).json({ error: "Post not found" });
     }
 
-    const updatedPost = await Post.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
+    const updatedPost = await Post.findByIdAndUpdate(
+      req.params.id,
+      {
+        title: req.body.title,
+        subtitle: req.body.subtitle,
+        content: req.body.content,
+        banner: imageUrls[0].url,
+        imgUp: imageUrls[1].url, // Assuming the second image is stored in imgUp
+      },
+      {
+        new: true,
+      }
+    );
     res.status(200).json(updatedPost);
   } catch (error) {
     console.error("Error in updating the post", error);
