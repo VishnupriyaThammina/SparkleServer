@@ -11,7 +11,8 @@ const UserSchema = new Schema({
         type:String,
         required:true,
         match: /^[a-zA-Z0-9]+$/, 
-    },
+    } ,
+
     bio : {
         type:String,
        default:"Busy Sparkling! ttyl"
