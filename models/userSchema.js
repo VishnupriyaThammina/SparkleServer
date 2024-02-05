@@ -19,7 +19,7 @@ const UserSchema = new Schema({
     pfp :{
         type:String,
     },
-    password:String,
+    password:String ,
 });
 
 module.exports = mongoose.model('User',UserSchema);

@@ -1,6 +1,7 @@
 const Post = require("../models/postSchema");
 const jwt = require("../jwt/jwt");
-
+const cloudinary = require('cloudinary').v2;
+const {uploadToCloudinary,deleteFromCloudinary, removeFromCloudinary} = require("../services/cloudinary")
 const User = require("../models/userSchema");
 
 const createPost = async (req, res) => {
@@ -11,18 +12,19 @@ const createPost = async (req, res) => {
     }
 
     const decodedToken = jwt.verifyToken(token);
-    console.log(req.body);
-    // Handle file upload first
 
     const user = await User.findOne({ username: decodedToken.username });
-
+    const imageUrls = await Promise.all(
+      req.files.map(async (file) => {
+        return await uploadToCloudinary(file.path, "user-images");
+      })
+    );
     const post = await Post.create({
       title: req.body.title,
       subtitle: req.body.subtitle,
       content: req.body.content,
-      banner: req.body.banner,
-      thumbnail: req.body.thumbnail,
-      imgUp: req.file.path, // trimmed file
+      banner: imageUrls[1].url,
+      imgUp: imageUrls[0].url, // trimmed file
       userid: user._id,
     });
 
@@ -30,9 +32,10 @@ const createPost = async (req, res) => {
     res.status(201).json(post);
   } catch (error) {
     console.log("Error creating post:", error);
-    res.status(400).json({ error: "Internal server error" });
+    res.status(400).json({ error: "Internal server error " });
   }
 };
+
 
 const recentPosts = async (req, res) => {
   try {
